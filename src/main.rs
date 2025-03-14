@@ -4,6 +4,7 @@ use axum::extract::{Path, Query};
 use axum::response::{Html, IntoResponse, Response};
 use axum::routing::get;
 use axum::{middleware, Router};
+use model::ModelController;
 use serde::Deserialize;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
@@ -14,10 +15,15 @@ mod model;
 mod web;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
+    let model_controller = ModelController::new().await?;
     let routes_all: Router = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
+        .nest(
+            "/api",
+            web::routes_tickets::routes(model_controller.clone()),
+        )
         .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new());
 
@@ -26,6 +32,7 @@ async fn main() {
 
     let listener: TcpListener = TcpListener::bind(&address_server).await.unwrap();
     axum::serve(listener, routes_all).await.unwrap();
+    Ok(())
 }
 
 fn routes_hello() -> Router {
