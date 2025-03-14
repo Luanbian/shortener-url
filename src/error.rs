@@ -10,6 +10,7 @@ pub enum Error {
     LoginFail,
     TicketNotFound { id: u64 },
     AuthFailNoTokenProvided,
+    AuthTokenWrongFormat,
 }
 
 impl IntoResponse for Error {
