@@ -17,13 +17,15 @@ mod web;
 #[tokio::main]
 async fn main() -> Result<()> {
     let model_controller = ModelController::new().await?;
+
+    let routes_apis = web::routes_tickets::routes(model_controller.clone()).route_layer(
+        middleware::from_fn(web::middleware_auth::middleware_require_auth),
+    );
+
     let routes_all: Router = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
-        .nest(
-            "/api",
-            web::routes_tickets::routes(model_controller.clone()),
-        )
+        .nest("/api", routes_apis)
         .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new());
 

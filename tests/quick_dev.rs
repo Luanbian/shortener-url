@@ -16,7 +16,7 @@ async fn quick_dev() -> Result<()> {
             "password": "admin"
         }),
     );
-    req_login.await?.print().await?;
+    //req_login.await?.print().await?;
 
     let req_create_ticket = sut.do_post(
         "/api/tickets",
