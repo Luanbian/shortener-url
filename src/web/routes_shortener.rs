@@ -1,4 +1,4 @@
-use crate::model::{ModelController, Ticket, TicketForCreate};
+use crate::model::{ModelController, Shortener, ShortenerForCreate};
 use crate::Result;
 use axum::extract::{Path, State};
 use axum::{
@@ -15,21 +15,21 @@ pub fn routes(model_controller: ModelController) -> Router {
 
 async fn create_ticket(
     State(model_controller): State<ModelController>,
-    Json(ticket_payload): Json<TicketForCreate>,
-) -> Result<Json<Ticket>> {
+    Json(ticket_payload): Json<ShortenerForCreate>,
+) -> Result<Json<Shortener>> {
     println!("{:<12} - create_ticket", "HANDLER");
 
-    let ticket = model_controller.create_ticket(ticket_payload).await?;
+    let ticket = model_controller.create_short_link(ticket_payload).await?;
 
     Ok(Json(ticket))
 }
 
 async fn list_tickets(
     State(model_controller): State<ModelController>,
-) -> Result<Json<Vec<Ticket>>> {
+) -> Result<Json<Vec<Shortener>>> {
     println!("{:<12} - list_tickets", "HANDLER");
 
-    let tickets = model_controller.list_tickets().await?;
+    let tickets = model_controller.list_short_links().await?;
 
     Ok(Json(tickets))
 }
@@ -37,10 +37,10 @@ async fn list_tickets(
 async fn delete_tickets(
     State(model_controller): State<ModelController>,
     Path(id): Path<u64>,
-) -> Result<Json<Ticket>> {
+) -> Result<Json<Shortener>> {
     println!("{:<12} - list_tickets", "HANDLER");
 
-    let ticket = model_controller.delete_ticket(id).await?;
+    let ticket = model_controller.delete_short_link(id).await?;
 
     Ok(Json(ticket))
 }

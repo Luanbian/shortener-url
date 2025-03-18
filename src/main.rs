@@ -18,7 +18,7 @@ mod web;
 async fn main() -> Result<()> {
     let model_controller = ModelController::new().await?;
 
-    let routes_apis = web::routes_tickets::routes(model_controller.clone()).route_layer(
+    let routes_apis = web::routes_shortener::routes(model_controller.clone()).route_layer(
         middleware::from_fn(web::middleware_auth::middleware_require_auth),
     );
 
