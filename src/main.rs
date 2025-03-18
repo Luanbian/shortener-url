@@ -12,6 +12,7 @@ use tower_cookies::CookieManagerLayer;
 
 mod constants;
 mod error;
+mod features;
 mod model;
 mod web;
 

@@ -13,9 +13,16 @@ pub struct Shortener {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ShortenerForCreate {
+pub struct ShortenerCreateRequest {
     pub user_id: Uuid,
     pub original_url: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ShortenerForCreateDb {
+    pub user_id: Uuid,
+    pub original_url: String,
+    pub short_url: String,
 }
 
 #[derive(Clone)]
@@ -34,11 +41,14 @@ impl ModelController {
 }
 
 impl ModelController {
-    pub async fn create_short_link(&self, short_payload: ShortenerForCreate) -> Result<Shortener> {
+    pub async fn create_short_link(
+        &self,
+        short_payload: ShortenerForCreateDb,
+    ) -> Result<Shortener> {
         let shortener = Shortener {
             id: Uuid::new_v4(),
             user_id: short_payload.user_id,
-            short_url: short_payload.original_url.clone(),
+            short_url: short_payload.short_url,
             original_url: short_payload.original_url,
         };
 
