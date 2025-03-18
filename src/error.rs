@@ -24,7 +24,17 @@ impl IntoResponse for Error {
 }
 
 impl From<SqlxError> for Error {
-    fn from(_: SqlxError) -> Self {
-        Error::DatabaseConnectionError
+    fn from(err: SqlxError) -> Self {
+        match err {
+            SqlxError::RowNotFound => Error::DatabaseConnectionError,
+            SqlxError::Database(db_err) => {
+                eprintln!("Database error: {}", db_err);
+                Error::DatabaseConnectionError
+            }
+            _ => {
+                eprintln!("SQLx error: {:?}", err);
+                Error::DatabaseConnectionError
+            }
+        }
     }
 }

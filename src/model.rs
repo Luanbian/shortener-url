@@ -1,7 +1,6 @@
-use crate::constants::postgres;
 use crate::{Error, Result};
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool;
+use sqlx::PgPool as Pool;
 use std::sync::{Arc, Mutex};
 use uuid::Uuid;
 
@@ -13,7 +12,7 @@ pub struct Shortener {
     pub short_url: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct ShortenerForCreate {
     pub user_id: Uuid,
     pub original_url: String,
@@ -22,19 +21,11 @@ pub struct ShortenerForCreate {
 #[derive(Clone)]
 pub struct ModelController {
     short_links_list: Arc<Mutex<Vec<Option<Shortener>>>>,
-    pool: PgPool,
+    pool: Pool,
 }
 
 impl ModelController {
-    pub async fn new() -> Result<Self> {
-        postgres::load_env().await;
-        let pool = PgPool::connect(&postgres::get_postgres_url().await)
-            .await
-            .map_err(|e| {
-                println!("Failed to connect to the database: {:?}", e);
-                Error::DatabaseConnectionError
-            })?;
-
+    pub async fn new(pool: Pool) -> Result<Self> {
         Ok(Self {
             short_links_list: Arc::default(),
             pool,

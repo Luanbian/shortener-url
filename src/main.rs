@@ -17,7 +17,11 @@ mod web;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let model_controller = ModelController::new().await?;
+    constants::postgres::load_env().await;
+
+    let pool = connect_database().await?;
+
+    let model_controller = ModelController::new(pool.clone()).await?;
 
     let routes_apis = web::routes_shortener::routes(model_controller.clone()).route_layer(
         middleware::from_fn(web::middleware_auth::middleware_require_auth),
@@ -49,6 +53,20 @@ async fn main_response_mapper(res: Response) -> Response {
 
     println!();
     res
+}
+
+async fn connect_database() -> Result<sqlx::PgPool> {
+    let db_connection_str = &constants::postgres::get_postgres_url().await;
+    match sqlx::PgPool::connect(db_connection_str).await {
+        Ok(pool) => {
+            println!("Conectado ao banco de dados");
+            Ok(pool)
+        }
+        Err(e) => {
+            eprintln!("Erro ao conectar ao banco de dados: {:?}", e);
+            Err(e.into())
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
