@@ -10,6 +10,7 @@ use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
 
+mod constants;
 mod error;
 mod model;
 mod web;

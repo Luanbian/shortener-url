@@ -15,13 +15,13 @@ pub fn routes(model_controller: ModelController) -> Router {
 
 async fn create_ticket(
     State(model_controller): State<ModelController>,
-    Json(ticket_payload): Json<ShortenerForCreate>,
+    Json(short_payload): Json<ShortenerForCreate>,
 ) -> Result<Json<Shortener>> {
     println!("{:<12} - create_ticket", "HANDLER");
 
-    let ticket = model_controller.create_short_link(ticket_payload).await?;
+    let shortener = model_controller.create_short_link(short_payload).await?;
 
-    Ok(Json(ticket))
+    Ok(Json(shortener))
 }
 
 async fn list_tickets(
@@ -29,9 +29,9 @@ async fn list_tickets(
 ) -> Result<Json<Vec<Shortener>>> {
     println!("{:<12} - list_tickets", "HANDLER");
 
-    let tickets = model_controller.list_short_links().await?;
+    let short_links = model_controller.list_short_links().await?;
 
-    Ok(Json(tickets))
+    Ok(Json(short_links))
 }
 
 async fn delete_tickets(
@@ -40,7 +40,7 @@ async fn delete_tickets(
 ) -> Result<Json<Shortener>> {
     println!("{:<12} - list_tickets", "HANDLER");
 
-    let ticket = model_controller.delete_short_link(id).await?;
+    let shortener = model_controller.delete_short_link(id).await?;
 
-    Ok(Json(ticket))
+    Ok(Json(shortener))
 }
