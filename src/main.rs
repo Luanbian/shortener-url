@@ -27,6 +27,7 @@ async fn main() -> Result<()> {
 
     let routes_all: Router = Router::new()
         .merge(web::routes_login::routes())
+        .merge(web::routes_redirect::routes(model_controller.clone()))
         .nest("/api", routes_apis)
         .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new());

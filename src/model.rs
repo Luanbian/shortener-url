@@ -1,20 +1,14 @@
 use crate::Result;
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool as Pool;
+use sqlx::{prelude::FromRow, PgPool as Pool};
 use uuid::Uuid;
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, FromRow)]
 pub struct Shortener {
     pub id: Uuid,
     pub user_id: Uuid,
     pub original_url: String,
     pub short_url: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct ShortenerCreateRequest {
-    pub user_id: Uuid,
-    pub original_url: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -59,5 +53,15 @@ impl ModelController {
             .await?;
 
         Ok(shortener)
+    }
+
+    pub async fn get_original_url(&self, short_url: &str) -> Result<Option<String>> {
+        let query = "SELECT original_url FROM shorteners WHERE short_url = $1";
+        let result = sqlx::query_scalar::<_, String>(query)
+            .bind(short_url)
+            .fetch_optional(&self.pool)
+            .await?;
+
+        Ok(result)
     }
 }

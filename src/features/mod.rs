@@ -5,14 +5,12 @@ use std::collections::HashMap;
 
 pub struct UrlShortener {
     urls: HashMap<String, String>,
-    base_url: String,
 }
 
 impl UrlShortener {
-    pub fn new(base_url: &str) -> Self {
+    pub fn new() -> Self {
         Self {
             urls: HashMap::new(),
-            base_url: base_url.to_string(),
         }
     }
 
@@ -25,6 +23,6 @@ impl UrlShortener {
 
         self.urls.insert(short_code.clone(), long_url.to_string());
 
-        format!("{}/{}", self.base_url, short_code)
+        short_code
     }
 }
