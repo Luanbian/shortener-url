@@ -22,7 +22,7 @@ pub async fn middleware_require_auth(
         .get(AUTH_TOKEN)
         .map(|cookie| cookie.value().to_string());
 
-    let (user_id, exp, sign) = auth_token
+    let (_user_id, _exp, _sign) = auth_token
         .ok_or(Error::AuthFailNoTokenProvided)
         .and_then(parse_token)?;
 

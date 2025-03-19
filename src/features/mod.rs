@@ -27,8 +27,4 @@ impl UrlShortener {
 
         format!("{}/{}", self.base_url, short_code)
     }
-
-    pub fn redirect(&self, short_code: &str) -> Option<&String> {
-        self.urls.get(short_code)
-    }
 }

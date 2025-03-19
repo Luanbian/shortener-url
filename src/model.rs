@@ -1,7 +1,6 @@
-use crate::{Error, Result};
+use crate::Result;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool as Pool;
-use std::sync::{Arc, Mutex};
 use uuid::Uuid;
 
 #[derive(Clone, Debug, Serialize)]
@@ -27,16 +26,12 @@ pub struct ShortenerForCreateDb {
 
 #[derive(Clone)]
 pub struct ModelController {
-    short_links_list: Arc<Mutex<Vec<Option<Shortener>>>>,
     pool: Pool,
 }
 
 impl ModelController {
     pub async fn new(pool: Pool) -> Result<Self> {
-        Ok(Self {
-            short_links_list: Arc::default(),
-            pool,
-        })
+        Ok(Self { pool })
     }
 }
 
@@ -64,21 +59,5 @@ impl ModelController {
             .await?;
 
         Ok(shortener)
-    }
-
-    pub async fn list_short_links(&self) -> Result<Vec<Shortener>> {
-        let store = self.short_links_list.lock().unwrap();
-
-        let short_links = store.iter().filter_map(|t| t.clone()).collect();
-
-        Ok(short_links)
-    }
-
-    pub async fn delete_short_link(&self, id: u64) -> Result<Shortener> {
-        let mut store = self.short_links_list.lock().unwrap();
-
-        let short_link = store.get_mut(id as usize).and_then(|t| t.take());
-
-        short_link.ok_or(Error::TicketNotFound { id })
     }
 }

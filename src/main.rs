@@ -1,11 +1,8 @@
 pub use self::error::{Error, Result};
 
-use axum::extract::{Path, Query};
-use axum::response::{Html, IntoResponse, Response};
-use axum::routing::get;
+use axum::response::Response;
 use axum::{middleware, Router};
 use model::ModelController;
-use serde::Deserialize;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
@@ -29,7 +26,6 @@ async fn main() -> Result<()> {
     );
 
     let routes_all: Router = Router::new()
-        .merge(routes_hello())
         .merge(web::routes_login::routes())
         .nest("/api", routes_apis)
         .layer(middleware::map_response(main_response_mapper))
@@ -41,12 +37,6 @@ async fn main() -> Result<()> {
     let listener: TcpListener = TcpListener::bind(&address_server).await.unwrap();
     axum::serve(listener, routes_all).await.unwrap();
     Ok(())
-}
-
-fn routes_hello() -> Router {
-    Router::new()
-        .route("/hello", get(handler_hello))
-        .route("/hello2/{name}", get(handler_hello2))
 }
 
 async fn main_response_mapper(res: Response) -> Response {
@@ -68,24 +58,4 @@ async fn connect_database() -> Result<sqlx::PgPool> {
             Err(e.into())
         }
     }
-}
-
-#[derive(Debug, Deserialize)]
-struct HelloParams {
-    name: Option<String>,
-}
-
-// /hello?name="Luan"
-async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
-    println!("{:<12} - handler_hello - {params:?}", "HANDLER");
-
-    let name = params.name.as_deref().unwrap_or("World");
-    Html(format!("Hello <strong>{name}</strong>"))
-}
-
-// /hello/Luan
-async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
-    println!("{:<12} - handler_hello2 - {name:?}", "HANDLER2");
-
-    Html(format!("Hello2 <strong>{name}</strong>"))
 }
