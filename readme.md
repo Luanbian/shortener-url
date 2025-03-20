@@ -2,6 +2,12 @@
 
 Um encurtador de urls feito na linguagem Rust
 
+## O que este software faz:
+ - [x] Encurta urls
+ - [x] Salva as urls em um banco de dados
+ - [ ] café
+
+
 ## 🚀 Instalando
 
 Para instalar o encurtador de url, siga estas etapas:
@@ -82,3 +88,20 @@ Para testar via código o encurtador de url, siga estar etapas:
   short_url: http://localhost:8080/WCW7Yz
 ```
 > Ao copiar e colar o link no seu navegador você será redirecionado para o mesmo local da url original!
+
+---
+
+## Contribuinters
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="#">
+        <img src="https://avatars.githubusercontent.com/u/69372816?v=4" width="100px;" alt="Foto do Iuri Silva no GitHub"/><br>
+        <sub>
+          <b>Luan Almeida</b>
+        </sub>
+      </a>
+    </td>
+  </tr>
+</table>
