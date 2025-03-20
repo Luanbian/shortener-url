@@ -17,8 +17,6 @@ pub fn routes() -> Router {
 }
 
 async fn login(cookies: Cookies, payload: Json<LoginPayload>) -> Result<Json<Value>> {
-    println!("{:<12} - api_login", "HANDLER LOGIN");
-
     // TODO: implement real db/auth logic
     if payload.username != "admin" || payload.password != "admin" {
         return Err(Error::LoginFail);

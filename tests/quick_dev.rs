@@ -1,6 +1,5 @@
 use anyhow::Result;
 use serde_json::json;
-use uuid::Uuid;
 
 #[derive(serde::Deserialize)]
 struct ShortenerResponse {
@@ -23,7 +22,6 @@ async fn quick_dev() -> Result<()> {
     let req_create_ticket = sut.do_post(
         "/api/shortener",
         json!({
-            "user_id": Uuid::new_v4(),
             "original_url": "https://play.rust-lang.org/?version=stable&mode=debug&edition=2024",
         }),
     );

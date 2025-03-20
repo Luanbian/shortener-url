@@ -1,5 +1,5 @@
 use crate::features::UrlShortener;
-use crate::model::{ModelController, Shortener, ShortenerForCreateDb};
+use crate::model::{ModelController, ShortenerForCreateDb};
 use crate::Result;
 use axum::extract::State;
 use axum::{routing::post, Json, Router};
@@ -8,7 +8,6 @@ use uuid::Uuid;
 
 #[derive(Debug, Deserialize)]
 pub struct ShortenerCreateRequest {
-    pub user_id: Uuid,
     pub original_url: String,
 }
 
@@ -21,22 +20,20 @@ pub fn routes(model_controller: ModelController) -> Router {
 async fn create_short_url(
     State(model_controller): State<ModelController>,
     Json(short_payload): Json<ShortenerCreateRequest>,
-) -> Result<Json<Shortener>> {
-    println!("{:<12} - create_ticket", "HANDLER");
-
+) -> Result<String> {
     let mut shorter_url = UrlShortener::new();
     let short_url = shorter_url.shorten_url(&short_payload.original_url);
 
-    println!("code: {short_url}");
-    println!("long_url: {:?} ", short_payload.original_url);
+    println!("short_url: http://localhost:8080/{short_url}");
 
     let short_payload_db = ShortenerForCreateDb {
-        user_id: short_payload.user_id,
+        user_id: Uuid::new_v4(),
         original_url: short_payload.original_url,
         short_url,
     };
 
     let shortener = model_controller.create_short_link(short_payload_db).await?;
 
-    Ok(Json(shortener))
+    let shorted_url = format!("http:localhost:8080/{}", shortener.short_url.to_string());
+    Ok(shorted_url)
 }

@@ -21,9 +21,7 @@ async fn main() -> Result<()> {
 
     let model_controller = ModelController::new(pool.clone()).await?;
 
-    let routes_apis = web::routes_shortener::routes(model_controller.clone()).route_layer(
-        middleware::from_fn(web::middleware_auth::middleware_require_auth),
-    );
+    let routes_apis = web::routes_shortener::routes(model_controller.clone());
 
     let routes_all: Router = Router::new()
         .merge(web::routes_login::routes())
@@ -41,9 +39,6 @@ async fn main() -> Result<()> {
 }
 
 async fn main_response_mapper(res: Response) -> Response {
-    println!("{:<12} - main_response_mapper", "RES_MAPPER");
-
-    println!();
     res
 }
 

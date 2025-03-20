@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use axum::body::Body;
 use axum::extract::Request;
 use axum::http::Response;
