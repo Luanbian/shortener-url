@@ -7,6 +7,15 @@ Um encurtador de urls feito na linguagem Rust
  - [x] Salva as urls em um banco de dados
  - [ ] café
 
+---
+## Tecnologias usadas
+ - Rust
+ - Axum
+ - Tokio
+ - SQLx
+ - Postgres
+ - Docker
+---
 
 ## 🚀 Instalando
 
